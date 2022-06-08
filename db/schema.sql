@@ -6,8 +6,8 @@ CREATE DATABASE reviews;
 DROP TABLE IF EXISTS review CASCADE;
 CREATE TABLE review (
   id SERIAL PRIMARY KEY,
-  product_id INT NOT NULL UNIQUE,
-  review_date TIMESTAMP NOT NULL,
+  product_id INT NOT NULL,
+  review_date BIGINT NOT NULL,
   rating INT NOT NULL,
   summary TEXT NOT NULL,
   body TEXT NOT NULL,
@@ -19,10 +19,12 @@ CREATE TABLE review (
   reported BOOLEAN NOT NULL
 );
 
+ALTER TABLE review ALTER COLUMN review_date TYPE TIMESTAMP USING to_timestamp((review_date::decimal)/1000);
+
 DROP TABLE IF EXISTS characteristics CASCADE;
 CREATE TABLE characteristics (
   id SERIAL PRIMARY KEY,
-  product_id INT references review(product_id),
+  product_id INT NOT NULL,
   name TEXT NOT NULL
 );
 
@@ -47,7 +49,7 @@ DELIMITER ','
 CSV HEADER;
 
 COPY characteristics (id, product_id, name)
-FROM '/Users/jessicazhou/esktop/HR/SDC/data/characteristics.csv'
+FROM '/Users/jessicazhou/Desktop/HR/SDC/data/characteristics.csv'
 DELIMITER ','
 CSV HEADER;
 
