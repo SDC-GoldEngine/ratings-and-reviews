@@ -1,0 +1,24 @@
+{
+  "name": "ratings-and-reviews",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdc-lannister/ratings-and-reviews.git"
+  },
+  "author": "Jessica Zhou",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sdc-lannister/ratings-and-reviews/issues"
+  },
+  "homepage": "https://github.com/sdc-lannister/ratings-and-reviews#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "pg": "^8.7.3"
+  }
+}
