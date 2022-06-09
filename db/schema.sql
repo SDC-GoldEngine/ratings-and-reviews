@@ -19,8 +19,6 @@ CREATE TABLE review (
   reported BOOLEAN NOT NULL
 );
 
-ALTER TABLE review ALTER COLUMN review_date TYPE TIMESTAMP USING to_timestamp((review_date::decimal)/1000);
-
 DROP TABLE IF EXISTS characteristics CASCADE;
 CREATE TABLE characteristics (
   id SERIAL PRIMARY KEY,
@@ -62,3 +60,5 @@ COPY review_photos (id, review_id, review_url)
 FROM '/Users/jessicazhou/Desktop/HR/SDC/data/reviews_photos.csv'
 DELIMITER ','
 CSV HEADER;
+
+ALTER TABLE review ALTER COLUMN review_date TYPE TIMESTAMP USING (to_timestamp(review_date::decimal/1000));
