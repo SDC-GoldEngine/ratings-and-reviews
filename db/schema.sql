@@ -30,18 +30,18 @@ DROP TABLE IF EXISTS characteristic_reviews CASCADE;
 CREATE TABLE characteristic_reviews (
   id SERIAL PRIMARY KEY,
   characteristic_id INT references characteristics(id),
-  review_id INT references review(id),
+  review_id INT references review(review_id),
   char_value INT NOT NULL
 );
 
 DROP TABLE IF EXISTS review_photos CASCADE;
 CREATE TABLE review_photos (
   id SERIAL PRIMARY KEY,
-  review_id INT references review(id),
+  review_id INT references review(review_id),
   review_url TEXT NOT NULL
 );
 
-COPY review (id, product_id, rating, review_date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness)
+COPY review (review_id, product_id, rating, review_date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness)
 FROM '/Users/jessicazhou/Desktop/HR/SDC/data/reviews.csv'
 DELIMITER ','
 CSV HEADER;

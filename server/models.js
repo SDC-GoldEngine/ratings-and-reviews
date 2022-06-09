@@ -1,7 +1,12 @@
 var pool = require('../db');
 
 module.exports = {
-  getAllReviews: function (page, count, sort, product_id) {
+  getAllReviews: function (query) {
+    let page = query.page || 1;
+    let count = query.count || 5;
+    let sort = query.sort || 'relevant';
+    let product_id = query.product_id;
+
     if (sort === 'relevant') sort = 'r.review_date'; // need to come back and change
     else if (sort === 'newest') sort = 'r.review_date';
     else if (sort === 'helpful') sort = 'r.helpfulness';
@@ -41,5 +46,33 @@ module.exports = {
       'results': res.rows
     }))
     .catch((err) => console.log('err', err));
+  },
+
+  getMeta: function(product_id) {
+    console.log('delet later')
+  },
+
+  addReview: function(args) {
+    console.log('args', args)
+  },
+
+  markHelpful: function(review_id) {
+    return pool.query(`
+      UPDATE review
+      SET helpfulness = helpfulness+1
+      WHERE review_id=${review_id};
+    `)
+    .then((res) => res.rows)
+    .catch((err) =>  console.log('err', err));
+  },
+
+  report: function(review_id) {
+    return pool.query(`
+      UPDATE review
+      SET reported = NOT reported
+      WHERE review_id=${review_id};
+    `)
+    .then((res) => res.rows)
+    .catch((err) =>  console.log('err', err));
   }
 };
