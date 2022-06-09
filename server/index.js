@@ -12,7 +12,6 @@ app.get(`/reviews`, (req, res) => {
   product_id = req.query.product_id;
   getAllReviews(page, count, sort, product_id)
   .then((result) => {
-    console.log('hi')
     res.status(201).send(result)
   })
   .catch((err) => res.status(500).send('error getting reviews'));
