@@ -19,7 +19,7 @@ module.exports = {
 
   addReview: (req, res) => {
     addReview(req.body)
-    .then((result) => res.status(200).send(result))
+    .then((result) => res.status(200).send('successfully added review'))
     .catch((err) => res.status(500).send('error adding review'));
   },
 

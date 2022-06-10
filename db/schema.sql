@@ -61,6 +61,11 @@ FROM '/Users/jessicazhou/Desktop/HR/SDC/data/reviews_photos.csv'
 DELIMITER ','
 CSV HEADER;
 
-ALTER TABLE review ALTER COLUMN review_date TYPE TIMESTAMP USING (to_timestamp(review_date::decimal/1000));
+ALTER TABLE review
+ALTER COLUMN review_date TYPE TIMESTAMP
+USING (to_timestamp(review_date::decimal/1000));
+-- ALTER COLUMN review_date SET DEFAULT LOCALTIMESTAMP;
 
 SELECT setval('"review_review_id_seq"', (SELECT MAX(review_id) FROM review)+1);
+SELECT setval('"review_photos_id_seq"', (SELECT MAX(id) FROM review_photos)+1);
+SELECT setval('"characteristic_reviews_id_seq"', (SELECT MAX(id) FROM characteristic_reviews)+1);
