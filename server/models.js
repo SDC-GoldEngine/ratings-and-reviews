@@ -53,8 +53,8 @@ module.exports = {
   },
 
   addReview: function(args) {
-    (async() => {
-        let review_id = await pool.query(`
+    (async () => {
+        let reviewId = await pool.query(`
           INSERT INTO review (
             product_id,
             review_date,
@@ -81,7 +81,7 @@ module.exports = {
           INSERT INTO review_photos (
             review_id, review_url
           ) SELECT review_id, review_url
-          FROM UNNEST (${Array(args.photos.length).fill(review_id)}::int[], ${args.photos}::text[])
+          FROM UNNEST (${Array(args.photos.length).fill(reviewId)}::int[], ${args.photos}::text[])
           AS t (review_id, review_url);
         `);
 
@@ -89,15 +89,15 @@ module.exports = {
           INSERT INTO characteristics_reviews (review_id, characteristics_id, char_value)
           SELECT review_id, characteristics_id, char_value
           FROM UNNEST (
-            ${Array(Object.keys(args.characteristics).length).fill(review_id)}::int[],
+            ${Array(Object.keys(args.characteristics).length).fill(reviewId)}::int[],
             ${Object.keys(characteristics)}::int[],
             ${Objects.values(characteristics)}::int[]
           ) AS t (review_id, characteristics_id, char_value);
         `);
 
         Promise.all([photoInsert, charInsert])
-        .then((result) => console.log('result from promise.all', result));
-      })
+        .then((result) => result);
+      })()
     .then((res) => console.log('result', res))
     .catch((err) => console.log('err', err));
   },
