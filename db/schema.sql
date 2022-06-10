@@ -11,12 +11,12 @@ CREATE TABLE review (
   rating INT NOT NULL,
   summary TEXT NOT NULL,
   body TEXT NOT NULL,
-  response TEXT NOT NULL,
+  response TEXT DEFAULT NULL,
   recommend BOOLEAN NOT NULL,
   reviewer_name TEXT NOT NULL,
   reviewer_email TEXT NOT NULL,
   helpfulness INT DEFAULT 0,
-  reported BOOLEAN NOT NULL
+  reported BOOLEAN DEFAULT FALSE
 );
 
 DROP TABLE IF EXISTS characteristics CASCADE;
@@ -62,3 +62,5 @@ DELIMITER ','
 CSV HEADER;
 
 ALTER TABLE review ALTER COLUMN review_date TYPE TIMESTAMP USING (to_timestamp(review_date::decimal/1000));
+
+SELECT setval('"review_review_id_seq"', (SELECT MAX(review_id) FROM review)+1);

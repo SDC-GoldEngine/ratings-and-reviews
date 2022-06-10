@@ -13,7 +13,7 @@ module.exports = {
 
     return pool.query(`
     SELECT
-      r.id,
+      r.review_id,
       r.rating,
       r.summary,
       r.recommend,
@@ -32,9 +32,9 @@ module.exports = {
       , '[]') AS photos
     FROM review r
     LEFT JOIN review_photos p
-    ON r.id=p.review_id
-    WHERE r.product_id=${product_id}
-    GROUP BY r.id
+    ON r.review_id=p.review_id
+    WHERE r.product_id=${product_id} AND r.reported=false
+    GROUP BY r.review_id
     ORDER BY ${sort} DESC
     LIMIT ${count}
     OFFSET ${count * (page-1)}
@@ -53,7 +53,53 @@ module.exports = {
   },
 
   addReview: function(args) {
-    console.log('args', args)
+    (async() => {
+        let review_id = await pool.query(`
+          INSERT INTO review (
+            product_id,
+            review_date,
+            rating,
+            summary,
+            body,
+            recommend,
+            reviewer_name,
+            reviewer_email
+          ) VALUES (
+            ${args.product_id},
+            NOW(),
+            ${args.rating},
+            ${args.summary},
+            ${args.body},
+            ${args.recommend},
+            ${args.name},
+            ${args.email}
+          )
+          RETURNING review_id;
+        `);
+
+        let photoInsert = pool.query(`
+          INSERT INTO review_photos (
+            review_id, review_url
+          ) SELECT review_id, review_url
+          FROM UNNEST (${Array(args.photos.length).fill(review_id)}::int[], ${args.photos}::text[])
+          AS t (review_id, review_url);
+        `);
+
+        let charInsert = pool.query(`
+          INSERT INTO characteristics_reviews (review_id, characteristics_id, char_value)
+          SELECT review_id, characteristics_id, char_value
+          FROM UNNEST (
+            ${Array(Object.keys(args.characteristics).length).fill(review_id)}::int[],
+            ${Object.keys(characteristics)}::int[],
+            ${Objects.values(characteristics)}::int[]
+          ) AS t (review_id, characteristics_id, char_value);
+        `);
+
+        Promise.all([photoInsert, charInsert])
+        .then((result) => console.log('result from promise.all', result));
+      })
+    .then((res) => console.log('result', res))
+    .catch((err) => console.log('err', err));
   },
 
   markHelpful: function(review_id) {
@@ -76,3 +122,36 @@ module.exports = {
     .catch((err) =>  console.log('err', err));
   }
 };
+
+
+// ITH ins1 AS (
+//   INSERT INTO review (
+//     product_id,
+//     review_date,
+//     rating,
+//     summary,
+//     body,
+//     recommend,
+//     reviewer_name,
+//     reviewer_email
+//   ) VALUES (
+//     ${args.product_id},
+//     NOW(),
+//     ${args.rating},
+//     ${args.summary},
+//     ${args.body},
+//     ${args.recommend},
+//     ${args.name},
+//     ${args.email}
+//   )
+//   RETURNING review_id
+// )
+// , ins2 AS (
+//   INSERT INTO review_photos (
+//     review_id,
+//     review_url
+//   ) VALUES (
+//     review_id,
+//     SELECT UNNEST(${args.photos})
+//   )
+// )
