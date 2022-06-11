@@ -1,28 +1,12 @@
-var express = require('express');
+const express = require('express');
 
-var app = express();
+const app = express();
 module.exports.app = app;
-var {getAllReviews} = require('./models.js');
+const {getAllReviews, getMeta, addReview, markHelpful, report} = require('./models.js');
+const router = require('./router.js')
 
-// routes
-app.get(`/reviews`, (req, res) => {
-  page = req.query.page || 1;
-  count = req.query.count || 5;
-  sort = req.query.sort || 'relevant';
-  product_id = req.query.product_id;
-  getAllReviews(page, count, sort, product_id)
-  .then((result) => {
-    res.status(201).send(result)
-  })
-  .catch((err) => res.status(500).send('error getting reviews'));
-});
-
-// app.get(`/reviews/meta`, (req, res) => {
-//   let product_id = req.query.product_id;
-//   getAllReviews(product_id)
-//   .then((result) => res.status(201).send(result))
-//   .catch((err) => res.status(500).send('error getting reviews'));
-// });
+app.use(express.json())
+app.use('/', router);
 
 app.set('port', 3000);
 
