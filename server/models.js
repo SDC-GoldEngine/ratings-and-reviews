@@ -48,9 +48,55 @@ module.exports = {
       .catch((err) => console.log('err', err));
   },
 
-  getMeta: (productId) => {
-    console.log('delet later');
-  },
+  getMeta: (productId) => (pool.query(`
+      SELECT $1 AS product_id, * FROM
+      (
+        SELECT json_object_agg(r2.rating,
+          (
+          SELECT COUNT(r1.rating)
+          FROM review r1
+          WHERE r1.product_id = $1 AND r1.rating = r2.rating
+          GROUP BY r2.rating
+          )
+        ) AS ratings
+      FROM review r2
+      WHERE r2.product_id = $1) AS ratings,
+
+      (
+        SELECT json_object_agg(r4.recommend,
+          (
+          SELECT count(r3.recommend)
+          FROM review r3
+          WHERE r3.product_id = $1 AND r3.recommend = r4.recommend
+          GROUP BY r4.recommend
+          )
+        ) AS recommended
+      FROM review r4
+      WHERE r4.product_id = $1) AS recommended,
+
+      (
+        SELECT json_object_agg (
+          char.name,
+          char.charArray
+        ) AS characteristics
+        FROM (
+          SELECT
+            name,
+            json_build_object (
+              'id', c.id,
+              'value', AVG(cr.char_value)
+            ) AS charArray
+          FROM characteristics c
+          INNER JOIN characteristic_reviews cr
+          ON c.id = cr.characteristic_id
+          WHERE c.product_id = $1
+          GROUP BY c.id
+        ) AS char
+      ) AS characteristics;
+    `, [productId])
+    .then((res) => res.rows[0])
+    .catch((err) => console.log('err', err))
+  ),
 
   addReview: async (args) => {
     const date = new Date().toISOString();
@@ -186,3 +232,14 @@ module.exports = {
 // `)
 // .then((res) => console.log('result', res))
 // .catch((err) => console.log('err', err));
+
+
+// json_build_object(
+//   'id', c.id,
+//   'value', AVG(cr.char_value)
+// )) AS singleChar
+// FROM characteristics c
+// INNER JOIN characteristic_reviews cr
+// ON c.id=cr.characteristic_id
+// WHERE c.product_id=$1
+// GROUP BY c.id

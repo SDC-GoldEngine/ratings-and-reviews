@@ -69,3 +69,8 @@ USING (to_timestamp(review_date::decimal/1000));
 SELECT setval('"review_review_id_seq"', (SELECT MAX(review_id) FROM review)+1);
 SELECT setval('"review_photos_id_seq"', (SELECT MAX(id) FROM review_photos)+1);
 SELECT setval('"characteristic_reviews_id_seq"', (SELECT MAX(id) FROM characteristic_reviews)+1);
+
+CREATE INDEX review_product_id_index ON review (product_id);
+CREATE INDEX review_helpfulness_index ON review (helpfulness DESC);
+CREATE INDEX review_date_index ON review (review_date DESC);
+CREATE INDEX char_product_id_index ON characteristics (product_id);
