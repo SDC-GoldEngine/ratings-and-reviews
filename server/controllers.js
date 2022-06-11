@@ -9,13 +9,13 @@ const {
 module.exports = {
   getAllReviews: (req, res) => {
     getAllReviews(req.query)
-      .then((result) => res.status(201).send(result))
+      .then((result) => res.status(200).send(result))
       .catch((err) => res.status(500).send('error getting reviews', err));
   },
 
   getMeta: (req, res) => {
     getMeta(req.query.product_id)
-      .then((result) => res.status(201).send(result))
+      .then((result) => res.status(200).send(result))
       .catch((err) => res.status(500).send('error getting reviews', err));
   },
 
