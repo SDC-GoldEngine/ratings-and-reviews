@@ -190,6 +190,12 @@ module.exports = {
       .then((res) => res.rows)
       .catch((err) => console.log('err', err))
   ),
+
+  tester: () => (
+    pool.query('SELECT * FROM review WHERE product_id=1')
+      .then((res) => res.rows)
+      .catch((err) => console.log('err', err))
+  )
 };
 
 // return pool.query(`

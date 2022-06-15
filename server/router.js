@@ -12,4 +12,6 @@ router.put('/reviews/:review_id/helpful', controllers.markHelpful);
 
 router.put('/reviews/:review_id/report', controllers.report);
 
+router.get('/tester', controllers.tester);
+
 module.exports = router;

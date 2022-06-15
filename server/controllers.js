@@ -4,6 +4,7 @@ const {
   addReview,
   markHelpful,
   report,
+  tester,
 } = require('./models');
 
 module.exports = {
@@ -36,4 +37,10 @@ module.exports = {
       .then(() => res.sendStatus(200))
       .catch((err) => res.status(500).send('error reporting review', err));
   },
+
+  tester: (req, res) => {
+    tester()
+      .then((result) => res.status(200).send(result))
+      .catch((err) => res.status(500).send('error testing', err));
+  }
 };
