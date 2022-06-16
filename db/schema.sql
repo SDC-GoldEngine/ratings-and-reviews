@@ -74,3 +74,6 @@ CREATE INDEX review_product_id_index ON review (product_id);
 CREATE INDEX review_helpfulness_index ON review (helpfulness DESC);
 CREATE INDEX review_date_index ON review (review_date DESC);
 CREATE INDEX char_product_id_index ON characteristics (product_id);
+CREATE INDEX char_review_char_id_index ON characteristic_reviews (characteristic_id);
+CREATE INDEX char_review_review_id_index ON characteristic_reviews (review_id);
+CREATE INDEX review_photos_review_id_index ON review_photos (review_id);
