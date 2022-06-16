@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npx nodemon server ./server",
-    "test": "jest"
+    "dev": "npx nodemon server ./server",
+    "test": "jest",
+    "start": "NODE_ENV=production node ./server/index.js"
   },
   "repository": {
     "type": "git",
